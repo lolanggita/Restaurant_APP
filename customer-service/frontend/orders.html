@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Orders</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <h2>Restaurant</h2>
+      <div class="nav-menu">
+        <a href="/"> Menu</a>
+        <a class="active" href="/orders.html"> Orders</a>
+        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Riwayat Pesanan</h1>
+    <div id="orders" class="card-grid"></div>
+  </div>
+  <script>
+    function logout(){ localStorage.removeItem('token'); localStorage.removeItem('user'); location.href='/login.html'; }
+    const token = localStorage.getItem('token');
+    if(!token){ location.href='/login.html'; }
+    async function load(){
+      const res = await fetch('/orders', { headers: { Authorization: 'Bearer ' + token }}); 
+      const data = await res.json();
+      const root = document.getElementById('orders');
+      if(!Array.isArray(data)||data.length===0){ root.innerHTML = '<div class="loading">Belum ada pesanan</div>'; return;}
+      root.innerHTML = data.map(o=>`
+        <div class="card">
+          <div class="card-body">
+            <h3>#${o.id} - ${o.customer_name}</h3>
+            <p>Total: <b>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(o.total)}</b></p>
+            <small>${o.created_at}</small>
+            <div style="margin-top:10px"><a class="btn btn-secondary" href="/order.html?id=${o.id}">Detail</a></div>
+          </div>
+        </div>
+      `).join('');
+    }
+    load();
+  </script>
+</body>
+</html>

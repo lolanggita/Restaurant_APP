@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Warung Satu Rasa - Order</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <h2>Restaurant</h2>
+      <div class="nav-menu">
+        <a class="active" href="/"> Menu</a>
+        <a href="/orders.html"> Orders</a>
+        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container grid-2">
+    <main>
+      <header style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div>
+          <h1 style="margin:0">Warung Satu Rasa</h1>
+          <span class="badge">Restoran</span>
+        </div>
+        <div>
+          <input id="customerName" placeholder="Nama pemesan" style="padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px;"/>
+        </div>
+      </header>
+
+      <section id="menuList" class="card-grid">
+        <div class="loading">Memuat menu...</div>
+      </section>
+    </main>
+
+    <aside class="cart">
+      <h2>🧺 Keranjang</h2>
+      <div id="cartItems" class="cart-items"></div>
+      <div class="summary"><span>Total</span><span id="cartTotal">Rp0</span></div>
+      <button id="checkoutBtn" class="btn btn-primary" style="width:100%;margin-top:10px">Checkout</button>
+      <div id="cartMsg" class="message"></div>
+    </aside>
+  </div>
+
+<script>
+  function logout(){ localStorage.removeItem('token'); localStorage.removeItem('user'); location.href='/login.html'; }
+  const token = localStorage.getItem('token');
+  if(!token){ location.href='/login.html'; }
+</script>
+<script src="js/shop.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Detail</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <h2>Restaurant</h2>
+      <div class="nav-menu">
+        <a href="/"> Menu</a>
+        <a class="active" href="/orders.html"> Orders</a>
+        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <div id="root"></div>
+  </div>
+<script>
+  function logout(){ localStorage.removeItem('token'); localStorage.removeItem('user'); location.href='/login.html'; }
+  const params = new URLSearchParams(location.search);
+  const token = localStorage.getItem('token');
+  if(!token){ location.href='/login.html'; }
+  const id = params.get('id');
+  async function load(){
+    const res = await fetch('/orders/'+id, { headers:{ Authorization: 'Bearer ' + token } });
+    const o = await res.json();
+    const root = document.getElementById('root');
+    if(o.error){ root.innerHTML = '<div class="loading">'+o.error+'</div>'; return;}
+    root.innerHTML = `
+      <div class="card">
+        <div class="card-body">
+          <h2>Order #${o.id} - ${o.customer_name}</h2>
+          <p><b>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(o.total)}</b></p>
+          <p><small>${o.created_at}</small></p>
+          <h3>Items</h3>
+          ${o.items.map(i=>`<div class="cart-item"><div>${i.name} x ${i.qty}</div><div>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(i.subtotal)}</div></div>`).join('')}
+        </div>
+      </div>`
+  }
+  load();
+</script>
+</body>
+</html>

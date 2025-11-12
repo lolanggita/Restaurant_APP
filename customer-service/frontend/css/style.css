@@ -1,0 +1,35 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+*{box-sizing:border-box}body{font-family:Poppins,Arial,sans-serif;background:#f6f7fb;margin:0}
+.container{max-width:1200px;margin:0 auto;padding:16px}
+.navbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 0;margin-bottom:16px}
+.nav-container{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;padding:0 16px}
+.nav-menu a,.btn{padding:10px 14px;border-radius:10px;border:none;text-decoration:none}
+.nav-menu a{color:#374151;margin-right:6px}
+.nav-menu a.active{background:#eef2ff;color:#4338ca}
+.btn{cursor:pointer}
+.btn-primary{background:#6366f1;color:#fff}
+.btn-secondary{background:#fff;border:1px solid #cbd5e1;color:#111827}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 2px 6px rgba(0,0,0,.05);overflow:hidden}
+.card .card-body{padding:16px}
+.card h3{margin:0 0 6px 0;font-size:1.05rem}
+.price{color:#111827;font-weight:700}
+.cart{position:sticky;top:16px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:16px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.cart h2{margin-top:0}
+.cart-items{max-height:400px;overflow:auto;margin-bottom:10px}
+.cart-item{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-bottom:1px solid #f1f5f9}
+.qty-box{display:flex;gap:6px;align-items:center}
+.qty-box button{width:26px;height:26px;border-radius:6px;border:1px solid #e5e7eb;background:#fff;cursor:pointer}
+.summary{display:flex;justify-content:space-between;font-weight:700;padding-top:8px;border-top:2px solid #e5e7eb}
+.grid-2{display:grid;grid-template-columns:3fr 1.5fr;gap:20px}
+.badge{background:#6366f1;color:#fff;border-radius:9999px;padding:4px 10px;font-size:.75rem}
+.loading{color:#64748b}
+.message{margin-top:10px}
+.auth-box{background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.08);padding:24px;margin-top:40px}
+.tabs{display:flex;gap:8px;margin-bottom:16px}
+.tab-btn{flex:1;border:1px solid #e5e7eb;background:#fff;border-radius:10px;padding:10px 14px;cursor:pointer}
+.tab-btn.active{background:#eef2ff;color:#4338ca;border-color:#c7d2fe}
+.form-group{margin-bottom:14px}
+.form-group input, .form-group select, .form-group textarea{width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:10px}
+.form-actions{display:flex;gap:8px}
