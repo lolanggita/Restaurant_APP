@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Status Pesanan - Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+*{box-sizing:border-box}
+body{font-family:Poppins,Arial,sans-serif;background:#f6f7fb;margin:0}
+.container{max-width:1200px;margin:0 auto;padding:16px}
+.navbar{background:#fff;border-bottom:1px solid #e5e7eb;padding:12px 0;margin-bottom:16px}
+.nav-container{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;padding:0 16px}
+.nav-menu a,.btn{padding:10px 14px;border-radius:10px;border:none;text-decoration:none}
+.nav-menu a{color:#374151;margin-right:6px}
+.nav-menu a.active{background:#eef2ff;color:#4338ca}
+.btn{cursor:pointer}
+.btn-primary{background:#6366f1;color:#fff}
+.btn-secondary{background:#fff;border:1px solid #cbd5e1;color:#111827}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+th,td{padding:12px;text-align:left;border-bottom:1px solid #e5e7eb}
+th{background:#eef2ff;color:#4338ca;font-weight:600;text-transform:uppercase}
+.status{padding:6px 12px;border-radius:9999px;color:#fff;font-weight:600;text-transform:capitalize;font-size:0.85rem;display:inline-block}
+.pending{background:#f59e0b}
+.picked{background:#0ea5e9}
+.in_transit{background:#3b82f6}
+.delivered{background:#10b981}
+.cancelled{background:#ef4444}
+@media (max-width:768px){
+    table,thead,tbody,th,td,tr{display:block}
+    th{display:none}
+    tr{margin-bottom:16px;background:#fff;border-radius:14px;box-shadow:0 2px 6px rgba(0,0,0,.05);padding:12px}
+    td{padding:6px 0;position:relative}
+    td::before{content:attr(data-label);font-weight:600;width:120px;display:inline-block;color:#6b7280}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <h2>Restaurant</h2>
+        <div class="nav-menu">
+        <a href="/">Menu</a>
+        <a href="/orders.html">Orders</a>
+        <a href="/delivery.html" class="active">Delivery</a>
+        <button class="btn btn-secondary" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <h1>Status Pesanan</h1>
+    <table id="deliveryTable">
+        <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Delivery ID</th>
+            <th>Status</th>
+            <th>Tanggal Estimasi</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td colspan="4">Memuat data...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    location.href='/login.html';
+}
+
+async function fetchDeliveries() {
+    try {
+        const res = await fetch('/deliveries');
+        const data = await res.json();
+        const tbody = document.querySelector('#deliveryTable tbody');
+        tbody.innerHTML = '';
+
+        if(data.length === 0){
+        tbody.innerHTML = '<tr><td colspan="4">Belum ada delivery</td></tr>';
+        return;
+        }
+
+        data.forEach(d => {
+        const eta = d.eta ? new Date(d.eta).toLocaleDateString('id-ID', { weekday:'short', year:'numeric', month:'short', day:'numeric' }) : '-';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td data-label="Order ID">${d.orderId}</td>
+            <td data-label="Delivery ID">${d.id}</td>
+            <td data-label="Status"><span class="status ${d.status}">${d.status}</span></td>
+            <td data-label="Tanggal Estimasi">${eta}</td>
+        `;
+        tbody.appendChild(tr);
+        });
+    } catch(e) {
+        const tbody = document.querySelector('#deliveryTable tbody');
+        tbody.innerHTML = `<tr><td colspan="4">Gagal memuat data</td></tr>`;
+        console.error(e);
+    }
+}
+
+fetchDeliveries();
+</script>
+</body>
+</html>
