@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -8,43 +7,74 @@
   <link rel="stylesheet" href="css/style.css"/>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="nav-container">
-      <h2>Restaurant</h2>
-      <div class="nav-menu">
-        <a href="/"> Menu</a>
-        <a class="active" href="/orders.html"> Orders</a>
-        <a href="/delivery.html">Delivery</a>
-        <button class="btn btn-secondary" onclick="logout()">Logout</button>
-      </div>
+<nav class="navbar">
+  <div class="nav-container">
+    <h2>Restaurant</h2>
+    <div class="nav-menu" id="navMenu">
+      <a href="/">Menu</a>
+      <a class="active" href="/orders.html">Orders</a>
+      <a href="/delivery.html" id="deliveryLink" style="display:none;">Delivery</a>
+      <button class="btn btn-secondary" onclick="logout()">Logout</button>
     </div>
-  </nav>
-
-  <div class="container">
-    <h1>Riwayat Pesanan</h1>
-    <div id="orders" class="card-grid"></div>
   </div>
-  <script>
-    function logout(){ localStorage.removeItem('token'); localStorage.removeItem('user'); location.href='/login.html'; }
-    const token = localStorage.getItem('token');
-    if(!token){ location.href='/login.html'; }
-    async function load(){
-      const res = await fetch('/orders', { headers: { Authorization: 'Bearer ' + token }}); 
-      const data = await res.json();
-      const root = document.getElementById('orders');
-      if(!Array.isArray(data)||data.length===0){ root.innerHTML = '<div class="loading">Belum ada pesanan</div>'; return;}
-      root.innerHTML = data.map(o=>`
-        <div class="card">
-          <div class="card-body">
-            <h3>#${o.id} - ${o.customer_name}</h3>
-            <p>Total: <b>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(o.total)}</b></p>
-            <small>${o.created_at}</small>
-            <div style="margin-top:10px"><a class="btn btn-secondary" href="/order.html?id=${o.id}">Detail</a></div>
+</nav>
+
+<div class="container">
+  <h1>Riwayat Pesanan</h1>
+  <div id="orders" class="card-grid"></div>
+</div>
+
+<script>
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  location.href = '/login.html';
+}
+
+const token = localStorage.getItem('token');
+const user = JSON.parse(localStorage.getItem('user'));
+if (!token) location.href = '/login.html';
+
+// Tampilkan link delivery kalau admin
+if (user && user.role === 'admin') {
+  document.getElementById('deliveryLink').style.display = 'inline-block';
+}
+
+// Load orders
+async function load() {
+  const res = await fetch('/orders', { headers: { Authorization: 'Bearer ' + token } });
+  const data = await res.json();
+  const root = document.getElementById('orders');
+
+  if (!Array.isArray(data) || data.length === 0) {
+    root.innerHTML = '<div class="loading">Belum ada pesanan</div>';
+    return;
+  }
+
+  root.innerHTML = data.map(o => {
+    let deliveryStatus = '';
+    if (o.delivery) {
+      const eta = o.delivery.eta ? new Date(o.delivery.eta).toLocaleString('id-ID') : '-';
+      deliveryStatus = `<p>Status: <b>${o.delivery.status}</b> (ETA: ${eta})</p>`;
+    }
+
+    return `
+      <div class="card">
+        <div class="card-body">
+          <h3>#${o.id} - ${o.customer_name}</h3>
+          <p>Total: <b>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(o.total)}</b></p>
+          ${deliveryStatus}
+          <small>${o.created_at}</small>
+          <div style="margin-top:10px">
+            <a class="btn btn-secondary" href="/order.html?id=${o.id}">Detail</a>
           </div>
         </div>
-      `).join('');
-    }
-    load();
-  </script>
+      </div>
+    `;
+  }).join('');
+}
+
+load();
+</script>
 </body>
 </html>
