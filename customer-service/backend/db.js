@@ -41,6 +41,16 @@ db.serialize(() => {
       subtotal REAL
     )
   `);
+  db.run(`
+  CREATE TABLE IF NOT EXISTS deliveries (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER,
+    status TEXT,
+    eta TEXT,
+    FOREIGN KEY (order_id) REFERENCES orders(id)
+  )
+`);
+
 });
 
 export default db;
