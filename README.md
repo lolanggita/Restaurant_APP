@@ -57,7 +57,7 @@ graph TB
     Delivery --> PDB
 ```
 
-**Alur Komunikasi **
+**Alur Komunikasi**
 ```mermaid
 sequenceDiagram
     participant Client as Frontend Client
