@@ -105,14 +105,14 @@ sequenceDiagram
 
 3.1. Instalasi Dependency
 Terdapat dua backend:
-- Customer Service (CS) → membutuhkan axios
-- Provider Service (PS) → tidak membutuhkan axios
+- Customer Service (CS)
+- Provider Service (PS)
 
 A. Backend Customer Service (CS)
 
 Masuk ke folder CS:
 ```bash
-cd backend/customer-service
+cd customer-service/backend
 ```
 Install dependency:
 ```bash
@@ -127,7 +127,7 @@ B. Backend Provider Service (PS)
 
 Masuk ke folder PS:
 ```bash
-cd backend/provider-service
+cd provider-service/backend
 ```
 Install dependency:
 ```bash
@@ -137,6 +137,8 @@ Jalankan service:
 ```bash
 npm start
 ```
+
+**RUN MENGGUNAKAN 2 TERMINAL**
 
 3.2. Environment Variable
 
