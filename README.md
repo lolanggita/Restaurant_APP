@@ -12,7 +12,9 @@ Sistem dibangun dengan pemisahan modul berdasarkan fungsi layanan:
 - Menu Service
 - Order Service
 - Delivery Service
+
 Frontend berkomunikasi dengan backend menggunakan REST API melalui API Gateway.
+
 Fitur Utama:
 - Register & Login
 - Menu makanan
@@ -23,7 +25,38 @@ Fitur Utama:
 
 **🏛️ 2. Arsitektur Sistem**
 
-<img width="2000" height="1200" alt="architecture_diagram" src="https://github.com/user-attachments/assets/5bf74ee8-9059-4f6b-9d41-a3bc36a0abd4" />
+```mermaid
+graph TB
+    Client["Frontend Client (HTML/CSS/JS)"] --> Gateway["API Gateway (Express.js)"]
+    
+    Gateway --> Auth["Auth Service (Provider & Customer)"]
+    Gateway --> Menu["Menu Service (Provider & Customer)"]
+    Gateway --> Order["Order Service (Provider & Customer)"]
+    Gateway --> Delivery["Delivery Service (Provider Only)"]
+    
+    %% Inter-service HTTP Request/Response (dotted)
+    Auth -. "HTTP Request/Response" .-> Menu
+    Menu -. "HTTP Request/Response" .-> Order
+    Order -. "HTTP Request/Response" .-> Delivery
+
+    subgraph ServiceLayer
+        Auth
+        Menu
+        Order
+        Delivery
+    end
+
+    subgraph DataLayer
+        CDB["customer.db"]
+        PDB["provider.db"]
+    end
+    
+    Auth --> CDB
+    Menu --> CDB
+    Order --> CDB
+    Delivery --> PDB
+```
+
 
 **🛠️ 3. Cara Menjalankan Aplikasi**
 
