@@ -22,9 +22,11 @@ Fitur Utama:
 - Logout
 
 **🏛️ 2. Arsitektur Sistem**
+
 <img width="2000" height="1200" alt="architecture_diagram" src="https://github.com/user-attachments/assets/5bf74ee8-9059-4f6b-9d41-a3bc36a0abd4" />
 
 **🛠️ 3. Cara Menjalankan Aplikasi**
+
 3.1. Instalasi Dependency
 Terdapat dua backend:
 - Customer Service (CS) → membutuhkan axios
@@ -46,6 +48,7 @@ npm start
 ```
 
 B. Backend Provider Service (PS)
+
 Masuk ke folder PS:
 ```bash
 cd backend/provider-service
@@ -60,6 +63,7 @@ npm start
 ```
 
 3.2. Environment Variable
+
 Customer Service
 ```.env
 PORT=4002
