@@ -95,12 +95,6 @@ sequenceDiagram
     OrderService-->>Gateway: Order confirmation
     Gateway-->>Client: Order confirmed
 
-    %% Provider managing menu
-    Client->>Gateway: POST /menus
-    Gateway->>MenuService: Create menu (Admin)
-    MenuService-->>Gateway: Menu created
-    Gateway-->>Client: Success response
-
     Client->>Gateway: PUT /delivery/{id}
     Gateway->>DeliveryService: Update delivery status
     DeliveryService-->>Gateway: Updated status
