@@ -57,6 +57,55 @@ graph TB
     Delivery --> PDB
 ```
 
+**Alur Komunikasi **
+```mermaid
+sequenceDiagram
+    participant Client as Frontend Client
+    participant Gateway as API Gateway
+    participant AuthService as Auth Service
+    participant MenuService as Menu Service
+    participant OrderService as Order Service
+    participant DeliveryService as Delivery Service
+
+    %% Register & Login
+    Client->>Gateway: POST /auth/register
+    Gateway->>AuthService: Forward request
+    AuthService-->>Gateway: Success / Error
+    Gateway-->>Client: Response
+
+    Client->>Gateway: POST /auth/login
+    Gateway->>AuthService: Forward request
+    AuthService-->>Gateway: JWT token
+    Gateway-->>Client: JWT token
+
+    %% Customer browsing menu
+    Client->>Gateway: GET /menus
+    Gateway->>MenuService: Fetch menu
+    MenuService-->>Gateway: Menu data
+    Gateway-->>Client: Menu list
+
+    %% Customer add to cart & checkout
+    Client->>Gateway: POST /orders
+    Gateway->>OrderService: Forward request
+    OrderService->>MenuService: GET /menus/{id} (validate item)
+    MenuService-->>OrderService: Menu details
+    OrderService->>OrderService: Calculate total, create order
+    OrderService->>DeliveryService: Create delivery entry
+    DeliveryService-->>OrderService: Delivery created
+    OrderService-->>Gateway: Order confirmation
+    Gateway-->>Client: Order confirmed
+
+    %% Provider managing menu
+    Client->>Gateway: POST /menus
+    Gateway->>MenuService: Create menu (Admin)
+    MenuService-->>Gateway: Menu created
+    Gateway-->>Client: Success response
+
+    Client->>Gateway: PUT /delivery/{id}
+    Gateway->>DeliveryService: Update delivery status
+    DeliveryService-->>Gateway: Updated status
+    Gateway-->>Client: Success response
+```
 
 **🛠️ 3. Cara Menjalankan Aplikasi**
 
