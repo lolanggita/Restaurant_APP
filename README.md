@@ -163,5 +163,29 @@ PORT=4001
 | Sanitra Savitri | Auth Service (Fullstack) |
 
 **📡 5. Ringkasan Endpoint (API Gateway)**
-/// tolong diisi
 
+Auth Service
+
+Customer Endpoints
+```bash
+POST /auth/login           - Login sebagai admin kemudian mendapatkan token
+POST /auth/login           - Login sebagai customer kemudian mendapatkan token
+```
+Orders Service 
+
+Customer Endpoints
+```bash
+GET  /orders               - Mendapatkan semua data pesanan (khusus admin)
+```
+Provider Endpoints
+```bash
+GET  /restaurants/1/menus  - Mengambil daftar menu dari Provider
+```
+Delivery Service 
+
+Customer Endpoints
+```bash
+GET  /deliveries/:id       - Mendapatkan detail delivery tertentu
+GET  /deliveries           - Mendapatkan semua data delivery
+PUT  /deliveries/:id       - Mengupdate status delivery (misal dari Dikemas → Dibatalkan)
+```
