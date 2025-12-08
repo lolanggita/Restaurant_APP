@@ -1,7 +1,7 @@
 
 const API = {
   menus: '/browse/restaurants/1/menus',
-  order: '/orders'
+  order: '/api/orders'
 };
 
 const rupiah = (v) => new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(v||0);
@@ -53,21 +53,48 @@ function renderCart(){
 }
 
 async function loadMenus(){
-  const res = await fetch(API.menus);
-  const data = await res.json();
-  const root = document.getElementById('menuList');
-  root.innerHTML = data.map(m=>`
-    <div class="card">
-      <div class="card-body">
-        <h3>${m.name}</h3>
-        <div class="price">${rupiah(m.price)}</div>
-        <small>Stok: ${m.stock}</small>
-        <div style="margin-top:10px">
-          <button class="btn btn-primary" onclick='addToCart(${JSON.stringify({menu_id:m.id,name:m.name,price:m.price}).replace(/"/g,"&quot;")})'>+ Keranjang</button>
+  try {
+    const res = await fetch(API.menus);
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const data = await res.json();
+    const root = document.getElementById('menuList');
+    
+    if (!Array.isArray(data) || data.length === 0) {
+      root.innerHTML = '<div class="loading">Tidak ada menu tersedia</div>';
+      return;
+    }
+    
+    root.innerHTML = data.map(m=>`
+      <div class="card">
+        <div class="card-body">
+          <h3>${m.name}</h3>
+          <div class="price">${rupiah(m.price)}</div>
+          <small>Stok: ${m.stock}</small>
+          <div style="margin-top:10px">
+            <button class="btn btn-primary" data-menu-id="${m.id}" data-menu-name="${m.name.replace(/"/g, '&quot;')}" data-menu-price="${m.price}">+ Keranjang</button>
+          </div>
         </div>
       </div>
-    </div>
-  `).join('');
+    `).join('');
+    
+    // Add event listeners to all buttons
+    root.querySelectorAll('button[data-menu-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = {
+          menu_id: parseInt(btn.getAttribute('data-menu-id')),
+          name: btn.getAttribute('data-menu-name'),
+          price: parseFloat(btn.getAttribute('data-menu-price'))
+        };
+        addToCart(item);
+      });
+    });
+  } catch (error) {
+    console.error('Error loading menus:', error);
+    const root = document.getElementById('menuList');
+    root.innerHTML = '<div class="loading">Gagal memuat menu. Pastikan provider service berjalan di port 4001.</div>';
+  }
 }
 
 async function checkout(){

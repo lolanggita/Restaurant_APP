@@ -140,6 +140,24 @@ npm start
 
 **RUN MENGGUNAKAN 2 TERMINAL**
 
+**ATAU GUNAKAN SCRIPT HELPER (Lebih Mudah):**
+
+Jalankan kedua service sekaligus:
+```bash
+./start-services.sh
+```
+
+Hentikan kedua service:
+```bash
+./stop-services.sh
+```
+
+**Catatan Port:**
+- Provider-service: **Port 4001** (http://localhost:4001)
+- Customer-service: **Port 4002** (http://localhost:4002)
+
+**⚠️ PENTING:** Pastikan kedua service menggunakan port yang berbeda!
+
 3.2. Environment Variable
 
 Customer Service

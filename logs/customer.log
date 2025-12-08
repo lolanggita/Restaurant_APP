@@ -1,0 +1,30 @@
+
+> customer-service-backend@1.0.0 start
+> node server.js
+
+✅ Customer-service running at http://localhost:4002
+[0mGET / [36m304[0m 8.999 ms - -[0m
+[0mGET /css/style.css [36m304[0m 3.441 ms - -[0m
+[0mGET /js/shop.js [36m304[0m 1.941 ms - -[0m
+connect ECONNREFUSED ::1:4001
+[0mGET /browse/restaurants/1/menus [31m502[0m 87.740 ms - 32[0m
+[0mGET / [36m304[0m 0.936 ms - -[0m
+[0mGET /css/style.css [36m304[0m 1.596 ms - -[0m
+[0mGET /js/shop.js [36m304[0m 9.177 ms - -[0m
+connect ECONNREFUSED ::1:4001
+[0mGET /browse/restaurants/1/menus [31m502[0m 28.901 ms - 32[0m
+[0mGET / [36m304[0m 0.529 ms - -[0m
+[0mGET /css/style.css [36m304[0m 4.065 ms - -[0m
+[0mGET /js/shop.js [36m304[0m 9.115 ms - -[0m
+connect ECONNREFUSED ::1:4001
+[0mGET /browse/restaurants/1/menus [31m502[0m 10.666 ms - 32[0m
+[0mGET /orders.html [36m304[0m 0.419 ms - -[0m
+[0mGET /css/style.css [36m304[0m 4.268 ms - -[0m
+[0mGET /api/orders [36m304[0m 11.033 ms - -[0m
+[0mGET /delivery.html [36m304[0m 0.713 ms - -[0m
+[0mGET /api/delivery/deliveries [36m304[0m 24.994 ms - -[0m
+[0mGET / [36m304[0m 1.982 ms - -[0m
+[0mGET /css/style.css [36m304[0m 2.408 ms - -[0m
+[0mGET /js/shop.js [36m304[0m 1.484 ms - -[0m
+connect ECONNREFUSED ::1:4001
+[0mGET /browse/restaurants/1/menus [31m502[0m 9.780 ms - 32[0m

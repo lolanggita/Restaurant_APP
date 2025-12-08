@@ -43,39 +43,52 @@ const params = new URLSearchParams(location.search);
 const id = params.get('id');
 
 async function load() {
-  const res = await fetch('/orders/' + id, { headers: { Authorization: 'Bearer ' + token }});
-  const o = await res.json();
-  const root = document.getElementById('root');
+  try {
+    const res = await fetch('/api/orders/' + id, { headers: { Authorization: 'Bearer ' + token }});
+    if (!res.ok) {
+      if (res.status === 401) {
+        location.href = '/login.html';
+        return;
+      }
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const o = await res.json();
+    const root = document.getElementById('root');
 
-  if(o.error){ 
-    root.innerHTML = `<div class="loading">${o.error}</div>`; 
-    return;
-  }
+    if(o.error){ 
+      root.innerHTML = `<div class="loading">${o.error}</div>`; 
+      return;
+    }
 
-  root.innerHTML = `
-    <div class="card">
-      <div class="card-body">
-        <h2>Order #${o.id} - ${o.customer_name}</h2>
-        <p><b>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(o.total)}</b></p>
-        <p><small>${o.created_at}</small></p>
+    root.innerHTML = `
+      <div class="card">
+        <div class="card-body">
+          <h2>Order #${o.id} - ${o.customer_name}</h2>
+          <p><b>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(o.total)}</b></p>
+          <p><small>${o.created_at}</small></p>
 
-        <h3>Items</h3>
-        ${o.items.map(i=>`
-          <div class="cart-item">
-            <div>${i.name} x ${i.qty}</div>
-            <div>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(i.subtotal)}</div>
-          </div>
-        `).join('')}
+          <h3>Items</h3>
+          ${(o.items && Array.isArray(o.items) ? o.items.map(i=>`
+            <div class="cart-item">
+              <div>${i.name} x ${i.qty}</div>
+              <div>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(i.subtotal)}</div>
+            </div>
+          `).join('') : '<p>Tidak ada items</p>')}
 
-        <h3>Delivery Status</h3>
-        <p>
-          ${o.delivery ? 
-            `${o.delivery.status} (ETA: ${o.delivery.eta ? new Date(o.delivery.eta).toLocaleString('id-ID') : '-'})` 
-            : 'Belum ada delivery'}
-        </p>
+          <h3>Delivery Status</h3>
+          <p>
+            ${o.delivery ? 
+              `${o.delivery.status} (ETA: ${o.delivery.eta ? new Date(o.delivery.eta).toLocaleString('id-ID') : '-'})` 
+              : 'Belum ada delivery'}
+          </p>
+        </div>
       </div>
-    </div>
-  `;
+    `;
+  } catch (error) {
+    console.error('Error loading order:', error);
+    const root = document.getElementById('root');
+    root.innerHTML = '<div class="loading">Gagal memuat detail pesanan. ' + (error.message || '') + '</div>';
+  }
 }
 
 load();

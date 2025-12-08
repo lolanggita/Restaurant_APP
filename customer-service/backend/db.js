@@ -9,6 +9,7 @@ const dbPath = path.join(__dirname, "customer.db");
 const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
+  // USERS TABLE
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -21,6 +22,29 @@ db.serialize(() => {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // CUSTOMERS TABLE (UTK CRUD CUSTOMER)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS customers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      address TEXT
+    )
+  `);
+
+  // MENU TABLE (UTK CRUD MENU)
+  db.run(`
+    CREATE TABLE IF NOT EXISTS menu (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      price REAL NOT NULL,
+      description TEXT
+    )
+  `);
+
+  // ORDERS TABLE
   db.run(`
     CREATE TABLE IF NOT EXISTS orders (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,6 +54,8 @@ db.serialize(() => {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // ORDER ITEMS TABLE
   db.run(`
     CREATE TABLE IF NOT EXISTS order_items (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,16 +67,17 @@ db.serialize(() => {
       subtotal REAL
     )
   `);
-  db.run(`
-  CREATE TABLE IF NOT EXISTS deliveries (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    order_id INTEGER,
-    status TEXT,
-    eta TEXT,
-    FOREIGN KEY (order_id) REFERENCES orders(id)
-  )
-`);
 
+  // DELIVERIES TABLE
+  db.run(`
+    CREATE TABLE IF NOT EXISTS deliveries (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      order_id INTEGER,
+      status TEXT,
+      eta TEXT,
+      FOREIGN KEY (order_id) REFERENCES orders(id)
+    )
+  `);
 });
 
 export default db;

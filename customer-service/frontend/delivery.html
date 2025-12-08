@@ -69,30 +69,43 @@ if(!token || !user || user.role !== "admin"){
 const validStatus = ["Belum Dikirim", "Dikemas", "Dikirim", "Dalam Perjalanan", "Selesai", "Dibatalkan"];
 
 async function loadDeliveries(){
-  const res = await fetch('/deliveries', { headers: { Authorization: 'Bearer ' + token } });
-  const data = await res.json();
-  const tbody = document.querySelector('#deliveryTable tbody');
-  if(!Array.isArray(data) || data.length === 0){
-    tbody.innerHTML = '<tr><td colspan="4">Belum ada delivery</td></tr>';
-    return;
+  try {
+    const res = await fetch('/api/delivery/deliveries', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) {
+      if (res.status === 401) {
+        location.href = '/login.html';
+        return;
+      }
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const data = await res.json();
+    const tbody = document.querySelector('#deliveryTable tbody');
+    if(!Array.isArray(data) || data.length === 0){
+      tbody.innerHTML = '<tr><td colspan="4">Belum ada delivery</td></tr>';
+      return;
+    }
+    tbody.innerHTML = data.map(d => `
+      <tr>
+        <td>${d.id}</td>
+        <td>${d.order_id}</td>
+        <td>
+          <select onchange="updateStatus(${d.id}, this.value)">
+            ${validStatus.map(s => `<option value="${s}" ${s === d.status ? 'selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </td>
+        <td>${d.eta ? new Date(d.eta).toLocaleString('id-ID') : '-'}</td>
+      </tr>
+    `).join('');
+  } catch (error) {
+    console.error('Error loading deliveries:', error);
+    const tbody = document.querySelector('#deliveryTable tbody');
+    tbody.innerHTML = '<tr><td colspan="4">Gagal memuat data delivery. ' + (error.message || '') + '</td></tr>';
   }
-  tbody.innerHTML = data.map(d => `
-    <tr>
-      <td>${d.id}</td>
-      <td>${d.order_id}</td>
-      <td>
-        <select onchange="updateStatus(${d.id}, this.value)">
-          ${validStatus.map(s => `<option value="${s}" ${s === d.status ? 'selected' : ''}>${s}</option>`).join('')}
-        </select>
-      </td>
-      <td>${d.eta ? new Date(d.eta).toLocaleString('id-ID') : '-'}</td>
-    </tr>
-  `).join('');
 }
 
 async function updateStatus(id, status){
   try{
-    const res = await fetch(`/deliveries/${id}`, {
+    const res = await fetch(`/api/delivery/deliveries/${id}`, {
       method:'PUT',
       headers: {
         'Content-Type':'application/json',

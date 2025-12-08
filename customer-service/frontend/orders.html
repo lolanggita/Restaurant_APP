@@ -42,36 +42,49 @@ if (user && user.role === 'admin') {
 
 // Load orders
 async function load() {
-  const res = await fetch('/orders', { headers: { Authorization: 'Bearer ' + token } });
-  const data = await res.json();
-  const root = document.getElementById('orders');
+  try {
+    const res = await fetch('/api/orders', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) {
+      if (res.status === 401) {
+        location.href = '/login.html';
+        return;
+      }
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const data = await res.json();
+    const root = document.getElementById('orders');
 
-  if (!Array.isArray(data) || data.length === 0) {
-    root.innerHTML = '<div class="loading">Belum ada pesanan</div>';
-    return;
-  }
-
-  root.innerHTML = data.map(o => {
-    let deliveryStatus = '';
-    if (o.delivery) {
-      const eta = o.delivery.eta ? new Date(o.delivery.eta).toLocaleString('id-ID') : '-';
-      deliveryStatus = `<p>Status: <b>${o.delivery.status}</b> (ETA: ${eta})</p>`;
+    if (!Array.isArray(data) || data.length === 0) {
+      root.innerHTML = '<div class="loading">Belum ada pesanan</div>';
+      return;
     }
 
-    return `
-      <div class="card">
-        <div class="card-body">
-          <h3>#${o.id} - ${o.customer_name}</h3>
-          <p>Total: <b>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(o.total)}</b></p>
-          ${deliveryStatus}
-          <small>${o.created_at}</small>
-          <div style="margin-top:10px">
-            <a class="btn btn-secondary" href="/order.html?id=${o.id}">Detail</a>
+    root.innerHTML = data.map(o => {
+      let deliveryStatus = '';
+      if (o.delivery) {
+        const eta = o.delivery.eta ? new Date(o.delivery.eta).toLocaleString('id-ID') : '-';
+        deliveryStatus = `<p>Status: <b>${o.delivery.status}</b> (ETA: ${eta})</p>`;
+      }
+
+      return `
+        <div class="card">
+          <div class="card-body">
+            <h3>#${o.id} - ${o.customer_name}</h3>
+            <p>Total: <b>${new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR'}).format(o.total)}</b></p>
+            ${deliveryStatus}
+            <small>${o.created_at}</small>
+            <div style="margin-top:10px">
+              <a class="btn btn-secondary" href="/order.html?id=${o.id}">Detail</a>
+            </div>
           </div>
         </div>
-      </div>
-    `;
-  }).join('');
+      `;
+    }).join('');
+  } catch (error) {
+    console.error('Error loading orders:', error);
+    const root = document.getElementById('orders');
+    root.innerHTML = '<div class="loading">Gagal memuat pesanan. ' + (error.message || '') + '</div>';
+  }
 }
 
 load();
